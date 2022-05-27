@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
+
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract EthStaking {
     address public walletAddress;
     mapping(address => uint256) private _stakeHolders;
     AggregatorV3Interface internal priceFeed;
+    ERC20 tokenERC20 = ERC20(0xB4f80771EF233466D0D5dae471F5cA45de12A9Bf);
 
     constructor() {
         walletAddress = msg.sender;
@@ -58,6 +61,15 @@ contract EthStaking {
         ) = priceFeed.latestRoundData();
 
         return uint256(price);
+    }
+
+    function myTokenInfo() public view returns (string memory name) {
+        name = tokenERC20.name();
+        return name;
+    }
+
+    function transfer() public {
+        tokenERC20.transfer(0xe1A14F2B926F5E7e038e56DF9941Def9712aDd09, 1);
     }
 
     function calculateRewards(address addr) public view returns (uint256) {
