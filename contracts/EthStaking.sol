@@ -25,14 +25,19 @@ contract EthStaking {
         return errorMsg_;
     }
 
-    function stakeEth(uint256 value) public payable {
-        if (value < 5000000000000000000) {
-            address payable addr = payable(walletAddress);
-            addr.transfer(value);
-            _stakeHolders[msg.sender] = value;
-        } else {
-            logError(1);
-        }
+    function stakeEth() public payable {
+        uint256 amount = msg.value;
+        address payable addr = payable(walletAddress);
+        addr.transfer(amount);
+        _stakeHolders[msg.sender] = amount / 1 ether;
+        //     address payable addr = payable(walletAddress);
+        // if (value < 5000000000000000000) {
+        //     address payable addr = payable(walletAddress);
+        //     addr.transfer(value);
+        //     _stakeHolders[msg.sender] = value / 1 ether;
+        // } else {
+        //     logError(1);
+        // }
     }
 
     function stakeholderStakes(address addr)
@@ -43,7 +48,7 @@ contract EthStaking {
         return _stakeHolders[addr];
     }
 
-    function getLatestPrice() public view returns (int256) {
+    function getLatestPrice() public view returns (uint256) {
         (
             uint80 roundID,
             int256 price,
@@ -52,6 +57,11 @@ contract EthStaking {
             uint80 answeredInRound
         ) = priceFeed.latestRoundData();
 
+        return uint256(price);
+    }
+
+    function calculateRewards(address addr) public view returns (uint256) {
+        uint256 price = ((getLatestPrice() * _stakeHolders[addr]) * 5) / 100;
         return price;
     }
 }
