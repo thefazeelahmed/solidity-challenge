@@ -74,21 +74,21 @@ contract EthStaking {
     }
 
     function transfer() public payable {
-        console.log(address(this));
-        console.log(tokenERC20.balanceOf(address(this)));
-        console.log(
-            tokenERC20.balanceOf(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4)
-        );
+        // console.log(address(this));
+        // console.log(tokenERC20.balanceOf(address(this)));
+        // console.log(
+        //     tokenERC20.balanceOf(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4)
+        // );
         tokenERC20.approve(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 200);
         tokenERC20.transferFrom(
             0x5B38Da6a701c568545dCfcB03FcB875f56beddC4,
             0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db,
             100
         );
-        console.log(
-            tokenERC20.balanceOf(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db)
-        );
-        console.log(tokenERC20.balanceOf(address(this)));
+        // console.log(
+        //     tokenERC20.balanceOf(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db)
+        // );
+        // console.log(tokenERC20.balanceOf(address(this)));
     }
 
     // function calculateRewards(address addr) public view returns (uint) {
