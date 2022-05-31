@@ -39,14 +39,6 @@ contract EthStaking {
         delete _stakeHolders[addr];
     }
 
-    // function stakeholderStakes(address addr)
-    //     public
-    //     view
-    //     returns (uint256 stakes)
-    // {
-    //     return _stakeHolders[addr];
-    // }
-
     function stakeholderTimestamp(address addr) public view returns (uint48) {
         return _stakeHoldersTimestamps[addr];
     }
@@ -55,11 +47,6 @@ contract EthStaking {
         (, int256 price, , , ) = priceFeed.latestRoundData();
         return price;
     }
-
-    // function tranferTokens(address to, uint256 amount) external payable {
-    //     address from = msg.sender;
-    //     _token.transferFrom(from, to, amount);
-    // }
 
     function allowanceOf(address addr) external view returns (uint256) {
         return _token.allowance(addr, address(this));
