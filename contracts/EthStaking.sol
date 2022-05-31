@@ -76,7 +76,14 @@ contract EthStaking {
         return _token.balanceOf(msg.sender);
     }
 
-    function calculateRewards(address addr) public view returns (uint256) {
+    function calculateRewards()
+        public
+        pure
+        returns (
+            /*address addr */
+            uint256
+        )
+    {
         return 1;
     }
 
