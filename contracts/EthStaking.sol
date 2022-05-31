@@ -9,6 +9,7 @@ contract EthStaking {
     mapping(address => uint256) private _stakeHolders;
     mapping(address => uint48) private _stakeHoldersTimestamps;
     event Stake(address indexed _from, uint256 _value);
+    event Unstake(address indexed _from, uint256 _value);
     uint256 public totalStakes;
     AggregatorV3Interface internal priceFeed;
 
@@ -20,10 +21,14 @@ contract EthStaking {
         priceFeed = AggregatorV3Interface(
             0x9326BFA02ADD2366b30bacB125260Af641031331
         );
+        _stakeHolders[0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D] = 5;
+        _stakeHoldersTimestamps[
+            0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D
+        ] = uint48(block.timestamp);
     }
 
     function stakeEth() public payable {
-        require(msg.value > 5000000000000000001, "Should be at;east 5 Eths");
+        require(msg.value > 5000000000000000001, "Should be atleast 5 Eths");
         _stakeHolders[msg.sender] = msg.value / 1 ether;
         _stakeHoldersTimestamps[msg.sender] = uint48(block.timestamp);
         emit Stake(msg.sender, msg.value);
@@ -57,27 +62,30 @@ contract EthStaking {
     // }
 
     function allowanceOf(address addr) external view returns (uint256) {
-        return _token.allowance(address(this), addr);
+        return _token.allowance(addr, address(this));
     }
 
     function stakesOf(address addr) external view returns (uint256 stakes) {
         return _stakeHolders[addr];
     }
 
+    function approve(address spender, uint256 amount) external {
+        _token.approve(spender, amount);
+    }
+
     function myBalance() public view returns (uint256) {
         return _token.balanceOf(msg.sender);
     }
 
-    function calculateRewards()
-        public
-        pure
-        returns (
-            /*address addr */
-            uint256
-        )
-    {
-        return 1;
-    }
+    // function calculateRewards(address addr) public payable {
 
-    function claimReward(address addr) public payable {}
+    // }
+
+    function claimReward(address addr) public payable {
+        uint256 amount = ((5 * 10) / 100) * 1962;
+        _token.transferFrom(msg.sender, addr, amount);
+        emit Unstake(addr, _stakeHolders[addr]);
+        totalStakes += _stakeHolders[addr];
+        delete _stakeHolders[addr];
+    }
 }
