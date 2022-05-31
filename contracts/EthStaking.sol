@@ -68,10 +68,6 @@ contract EthStaking {
         return _stakeHolders[addr];
     }
 
-    function approve(address spender, uint256 amount) external {
-        _token.approve(spender, amount);
-    }
-
     function myBalance() public view returns (uint256) {
         return _token.balanceOf(msg.sender);
     }
