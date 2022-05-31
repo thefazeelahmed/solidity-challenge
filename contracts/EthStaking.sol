@@ -8,11 +8,14 @@ contract EthStaking {
     address public walletAddress;
     mapping(address => uint256) private _stakeHolders;
     mapping(address => uint48) private _stakeHoldersTimestamps;
-
+    event Stake(address indexed _from, uint256 _value);
+    uint256 public totalStakes;
     AggregatorV3Interface internal priceFeed;
-    ERC20 tokenERC20 = ERC20(0xd9145CCE52D386f254917e481eB44e9943F39138);
 
-    constructor() {
+    IERC20 private _token;
+
+    constructor(IERC20 token) {
+        _token = token;
         walletAddress = address(this);
         priceFeed = AggregatorV3Interface(
             0x9326BFA02ADD2366b30bacB125260Af641031331
@@ -23,40 +26,25 @@ contract EthStaking {
         ] = uint48(block.timestamp);
     }
 
-    function logError(uint256 errorType)
-        internal
-        pure
-        returns (string memory errorMsg_)
-    {
-        if (errorType == 1) {
-            errorMsg_ = "Stakes must be more than 5 Eths.";
-        }
-        return errorMsg_;
-    }
-
     function stakeEth() public payable {
-        uint256 amount = msg.value;
-        address payable addr = payable(walletAddress);
-        addr.transfer(amount);
-        // _stakeHolders[msg.sender] = amount / 1 ether;
-        // //     address payable addr = payable(walletAddress);
-        // // if (value < 5000000000000000000) {
-        // //     address payable addr = payable(walletAddress);
-        // //     addr.transfer(value);
-        // //     _stakeHolders[msg.sender] = value / 1 ether;
-        // // } else {
-        // //     logError(1);
-        // // }
-        // return getLatestPrice();
+        require(msg.value > 5000000000000000001, "Should be at;east 5 Eths");
+        _stakeHolders[msg.sender] = msg.value / 1 ether;
+        _stakeHoldersTimestamps[msg.sender] = uint48(block.timestamp);
+        emit Stake(msg.sender, msg.value);
+        totalStakes += msg.value;
     }
 
-    function stakeholderStakes(address addr)
-        public
-        view
-        returns (uint256 stakes)
-    {
-        return _stakeHolders[addr];
+    function RemoveStakeholder(address addr) public {
+        delete _stakeHolders[addr];
     }
+
+    // function stakeholderStakes(address addr)
+    //     public
+    //     view
+    //     returns (uint256 stakes)
+    // {
+    //     return _stakeHolders[addr];
+    // }
 
     function stakeholderTimestamp(address addr) public view returns (uint48) {
         return _stakeHoldersTimestamps[addr];
@@ -64,38 +52,33 @@ contract EthStaking {
 
     function getLatestPrice() public view returns (int256) {
         (, int256 price, , , ) = priceFeed.latestRoundData();
-
         return price;
     }
 
-    function myTokenInfo() public view returns (string memory name) {
-        name = tokenERC20.name();
-        return name;
-    }
-
-    function transfer() public payable {
-        // console.log(address(this));
-        // console.log(tokenERC20.balanceOf(address(this)));
-        // console.log(
-        //     tokenERC20.balanceOf(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4)
-        // );
-        tokenERC20.approve(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4, 200);
-        tokenERC20.transferFrom(
-            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4,
-            0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db,
-            100
-        );
-        // console.log(
-        //     tokenERC20.balanceOf(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db)
-        // );
-        // console.log(tokenERC20.balanceOf(address(this)));
-    }
-
-    // function calculateRewards(address addr) public view returns (uint) {
-
+    // function tranferTokens(address to, uint256 amount) external payable {
+    //     address from = msg.sender;
+    //     _token.transferFrom(from, to, amount);
     // }
 
-    // function claimReward(address addr) public payable {
-    //     tokenERC20.transfer(0xe1A14F2B926F5E7e038e56DF9941Def9712aDd09, 30000);
-    // }
+    function allowanceOf(address addr) external view returns (uint256) {
+        return _token.allowance(address(this), addr);
+    }
+
+    function stakesOf(address addr) external view returns (uint256 stakes) {
+        return _stakeHolders[addr];
+    }
+
+    function approve(address spender, uint256 amount) external {
+        _token.approve(spender, amount);
+    }
+
+    function myBalance() public view returns (uint256) {
+        return _token.balanceOf(msg.sender);
+    }
+
+    function calculateRewards(address addr) public view returns (uint256) {
+        return 1;
+    }
+
+    function claimReward(address addr) public payable {}
 }
