@@ -21,10 +21,6 @@ contract EthStaking {
         priceFeed = AggregatorV3Interface(
             0x9326BFA02ADD2366b30bacB125260Af641031331
         );
-        _stakeHolders[0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D] = 5;
-        _stakeHoldersTimestamps[
-            0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D
-        ] = uint48(block.timestamp);
     }
 
     function stakeEth() public payable {
@@ -60,12 +56,13 @@ contract EthStaking {
         return _token.balanceOf(msg.sender);
     }
 
-    function calculateRewards(address addr) public payable {
-        ((5 * 10) / 100) * 1962; /*uint(getLatestPrice()) to fetch latest price but no eths :D*/
+    function calculateRewards(address addr) public pure returns (uint256) {
+        return ((5 * 10) / 100) * 1962; /*uint(getLatestPrice()) to fetch latest price but no eths :D*/
     }
 
     function claimReward(address addr) public payable {
-        uint256 amount = _token.transferFrom(msg.sender, addr, amount);
+        uint256 amount = calculateRewards(addr);
+        _token.transferFrom(msg.sender, addr, amount);
         emit Unstake(addr, _stakeHolders[addr]);
         totalStakes -= _stakeHolders[addr] * 1000000000000000000;
         delete _stakeHolders[addr];
