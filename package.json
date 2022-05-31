@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "openzeppelin-solidity": "^4.6.0"
+    "openzeppelin-solidity": "^4.6.0",
+    "solhint": "^3.3.7"
   },
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
