@@ -20,10 +20,6 @@ contract EthStaking {
         priceFeed = AggregatorV3Interface(
             0x9326BFA02ADD2366b30bacB125260Af641031331
         );
-        _stakeHolders[0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D] = 5;
-        _stakeHoldersTimestamps[
-            0x7deF3308aeF9eD686F0C27A60d9e85897b536A1D
-        ] = uint48(block.timestamp);
     }
 
     function stakeEth() public payable {
