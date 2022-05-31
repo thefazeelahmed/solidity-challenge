@@ -82,10 +82,10 @@ contract EthStaking {
     // }
 
     function claimReward(address addr) public payable {
-        uint256 amount = ((5 * 10) / 100) * 1962;
+        uint256 amount = ((5 * 10) / 100) * 1962; /*uint(getLatestPrice()) to fetch latest price but no eths :D*/
         _token.transferFrom(msg.sender, addr, amount);
         emit Unstake(addr, _stakeHolders[addr]);
-        totalStakes += _stakeHolders[addr];
+        totalStakes -= _stakeHolders[addr] * 1000000000000000000;
         delete _stakeHolders[addr];
     }
 }
