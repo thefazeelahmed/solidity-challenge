@@ -35,10 +35,6 @@ contract EthStaking {
         totalStakes += msg.value;
     }
 
-    function RemoveStakeholder(address addr) public {
-        delete _stakeHolders[addr];
-    }
-
     function stakeholderTimestamp(address addr) public view returns (uint48) {
         return _stakeHoldersTimestamps[addr];
     }
