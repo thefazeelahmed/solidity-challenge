@@ -25,7 +25,7 @@ contract EthStaking {
 
     function stakeEth() public payable {
         require(msg.value > 5000000000000000001, "Should be atleast 5 Eths");
-        _stakeHolders[msg.sender] = msg.value / 1 ether;
+        _stakeHolders[msg.sender] += msg.value / 1 ether;
         _stakeHoldersTimestamps[msg.sender] = uint48(block.timestamp);
         emit Stake(msg.sender, msg.value);
         totalStakes += msg.value;
